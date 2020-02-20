@@ -1,0 +1,23 @@
+{% extends 'movies/index.twig' %}
+
+{% block content %}
+    <div class="row">
+        {% for movie in movies %}
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <img class="card-img-top" src="{{ movie.image }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="card-text">{{ movie.synopsis|resume }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="/{{ movie.id }}" class="btn btn-sm btn-outline-secondary">View</a>
+                            </div>
+                            <small class="text-muted">{{ movie.year }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
