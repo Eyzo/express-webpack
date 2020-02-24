@@ -1,61 +1,51 @@
-const mongoose = require('mongoose');
-const db = require('../conf/connection');
 const movie = require('../models/movie');
+const categorie = require('../models/categorie');
 const faker = require('faker/locale/fr');
+const EventEmitter = require('events');
+const movieEmitter = new EventEmitter();
 
-db.on('error', () => {
-    console.log('echec de la connection a la bdd');
-});
+async function fixtures() {
+    return new Promise(async (resolve,reject) => {
+        try {
+            await movie.model.remove({});
 
-db.on('open',() => {
-    console.log('connection réussi avec succés !');
+            for (let i = 0; i < 20; i++) {
+                try {
+                    let cats = await categorie.model.find({});
+                    let catId = cats[Math.floor(Math.random() * cats.length)]._id;
 
-    movie.model.remove({}).then(() => {
-        new Promise((resolve,reject) => {
-            for (let i = 0;i < 20; i++) {
+                    const Movie = new movie.model({
+                        title: faker.name.title(),
+                        synopsis: faker.lorem.sentence(),
+                        image: faker.image.imageUrl(),
+                        year: faker.date.past(),
+                        rate: Math.floor(Math.random() * 5),
+                        categorie: catId
+                    });
 
-                const categories = [
-                    'action',
-                    'aventure',
-                    'comédie',
-                    'horreur',
-                    'science-fiction',
-                    'thriller',
-                    'drame',
-                    'policier',
-                    'romance'
-                ];
-
-                const Movie = new movie.model({
-                    title: faker.name.title(),
-                    synopsis: faker.lorem.sentence(),
-                    image: faker.image.imageUrl(),
-                    year: faker.date.past(),
-                    rate: Math.floor(Math.random() * 5),
-                    categorie: [
-                        {
-                            name: categories[Math.floor(Math.random() * categories.length)]
+                    try {
+                        let movie = await Movie.save();
+                        if (i == 19) {
+                            resolve();
                         }
-                    ]
-                });
-
-                Movie.save().then((movie) => {
-                    console.log(`${movie.title} crée avec succés`);
-                    if (i == 20) {
-                        resolve();
+                    } catch (e) {
+                        reject();
                     }
-                }).catch((err) => {
-                    reject(err.message);
-                });
+                } catch (e) {
+                    reject();
+                }
             }
-
-        }).then(() => {
-            mongoose.connection.close();
-        }).catch((err) => {
-            console.log(err);
-        });
-    }).catch(() => {
-        console.log('erreur lors de la suppresion des documents dans la collection categorie');
+        } catch (e) {
+            reject();
+        }
     });
+}
 
+fixtures().then(() => {
+    movieEmitter.emit('done');
+}).catch(() => {
+
+    movieEmitter.emit('error');
 });
+
+module.exports = movieEmitter;

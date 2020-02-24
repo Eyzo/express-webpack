@@ -1,16 +1,12 @@
-const mongoose = require('mongoose');
-const db = require('../conf/connection');
 const categorie = require('../models/categorie');
+const EventEmitter = require('events');
+const categorieEmitter = new EventEmitter();
 
-db.on('error', () => {
-   console.log('echec de la connection a la bdd');
-});
+async function fixtures() {
+    return new Promise(async (resolve,reject) => {
+        try {
+            await categorie.model.remove({});
 
-db.on('open',() => {
-    console.log('connection réussi avec succés !');
-
-    categorie.model.remove({}).then(() => {
-        new Promise((resolve,reject) => {
             const datas = [
                 'action',
                 'aventure',
@@ -22,29 +18,32 @@ db.on('open',() => {
                 'policier',
                 'romance'
             ];
-            let i = 0;
 
-            datas.forEach((data) => {
+            let i = 0;
+            datas.forEach(async (data) => {
                 const Categorie = new categorie.model({
                     name: data
                 });
-                Categorie.save().then((categorie) => {
+                try {
+                    let categorie = await Categorie.save();
                     i++;
-                    console.log(`${categorie.name} crée avec succés`);
                     if (i == (datas.length - 1)) {
                         resolve();
                     }
-                }).catch((err) => {
-                    reject(err.message);
-                });
+                } catch (e) {
+                    reject();
+                }
             });
-        }).then(() => {
-            mongoose.connection.close();
-        }).catch((err) => {
-            console.log(err);
-        });
-    }).catch(() => {
-        console.log('erreur lors de la suppresion des documents dans la collection categorie');
+        } catch(e) {
+            reject();
+        }
     });
+}
 
+fixtures().then(() => {
+    categorieEmitter.emit('done');
+}).catch(() => {
+    categorieEmitter.emit('error');
 });
+
+module.exports = categorieEmitter;

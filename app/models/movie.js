@@ -7,7 +7,10 @@ const movieSchema = mongoose.Schema({
     image: String,
     year: Number,
     rate: Number,
-    categorie: [ categorie.schema ]
+    categorie: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Categorie'
+        }
 });
 
 module.exports = {
