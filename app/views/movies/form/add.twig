@@ -18,11 +18,19 @@
         </div>
         <div class="form-group">
             <label for="year">Année de sortie du film :</label>
-            <input type="number" id="year" name="year" class="form-group" min="1900" max="2020" required>
+            <input type="number" id="year" name="year" class="form-control" min="1900" max="2020" required>
         </div>
         <div class="form-group">
             <label for="rate">Note du film :</label>
-            <input type="number" min="0" max="5" required class="form-group" id="rate" name="rate">
+            <input type="number" min="0" max="5" required class="form-control" id="rate" name="rate">
+        </div>
+        <div class="form-group">
+            <label for="cat">catégorie :</label>
+            <select required class="form-control" id="cat" name="cat">
+                {% for categorie in categories %}
+                    <option value="{{ categorie._id }}">{{ categorie.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <button type="submit" class="form-control btn btn-primary">valider</button>

@@ -18,11 +18,19 @@
         </div>
         <div class="form-group">
             <label for="year">Année de sortie du film :</label>
-            <input type="number" id="year" name="year" class="form-group" min="1900" max="2020" value="{{ movie.year }}" required>
+            <input type="number" id="year" name="year" class="form-control" min="1900" max="2020" value="{{ movie.year }}" required>
         </div>
         <div class="form-group">
             <label for="rate">Note du film :</label>
-            <input type="number" min="0" max="5" required class="form-group" id="rate" name="rate" value="{{ movie.rate }}">
+            <input type="number" min="0" max="5" required class="form-control" id="rate" name="rate" value="{{ movie.rate }}">
+        </div>
+        <div class="form-group">
+            <label for="cat">catégorie :</label>
+            <select required class="form-control" id="cat" name="cat">
+                {% for categorie in categories %}
+                    <option value="{{ categorie._id }}" {% if movie.categorie.name == categorie.name %}selected{% endif %}>{{ categorie.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group row">
             <a href="/{{ movie.id }}" class="btn btn-secondary w-50">retour</a>

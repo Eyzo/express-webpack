@@ -1,5 +1,6 @@
 const Twig = require('twig');
 const fs = require('fs');
+const moment = require('moment');
 
 //Configuration de Twig
 Twig.extendFunction('last_bundle', function() {
@@ -7,6 +8,11 @@ Twig.extendFunction('last_bundle', function() {
     var mtime = stats.mtime;
     var date = Date.parse(mtime);
     return date;
+});
+
+Twig.extendFilter('timestampToDate', function (value) {
+    var dateString = moment.unix(value).format("MM/DD/YYYY");
+    return dateString;
 });
 
 Twig.extendFilter('resume', function(value, params) {

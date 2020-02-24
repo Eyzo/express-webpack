@@ -8,7 +8,8 @@
             <div class="col-lg-6">
                 <h1 class="text-center">{{ movie.title }}</h1>
                 <p class="text-center">{{ movie.synopsis }}</p>
-                <p class="text-muted">{{ movie.year }}</p>
+                <p class="text-muted">{{ movie.year|timestampToDate }}</p>
+                <p><span class="badge badge-primary">{{ movie.categorie.name }}</span></p>
                 <p class="text-center">{% for i in 1..movie.rate %}<i class="fas fa-star"></i>{% endfor %}</p>
             </div>
         </div>

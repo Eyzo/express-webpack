@@ -16,8 +16,8 @@ async function fixtures() {
 
                     const Movie = new movie.model({
                         title: faker.name.title(),
-                        synopsis: faker.lorem.sentence(),
-                        image: faker.image.imageUrl(),
+                        synopsis: faker.lorem.sentences(15),
+                        image: faker.random.image(),
                         year: faker.date.past(),
                         rate: Math.floor(Math.random() * 5),
                         categorie: catId
