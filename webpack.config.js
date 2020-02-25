@@ -1,17 +1,29 @@
 const path = require('path');
+
+const TerserJSPlugin = require('terser-webpack-plugin');
+var ManifestPlugin = require('webpack-manifest-plugin');
 const ProgressPlugin = require('webpack').ProgressPlugin;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const handler = (percentage, message, ...args) => {
     // e.g. Output each progress message directly to the console:
     console.info(percentage, message, ...args);
 };
 
-module.exports = {
+const dev = process.argv[2].split('=')[1] === 'development';
+
+
+let config = {
     entry: './app/src/index.js',
     output: {
         path: path.resolve(__dirname + '/public', 'dist'),
-        filename: 'bundle.js'
+        filename: dev ? '[name].js' : '[name].[chunkhash].js'
     },
+    mode: 'development',
+    watch: dev,
+    devtool: 'eval-cheap-source-map',
     module: {
         rules: [
             {
@@ -37,11 +49,14 @@ module.exports = {
             },
             {
                 test: /\.s[ac]ss$/i,
+                exclude: /node_modules/,
                 use: [
-                    // Creates `style` nodes from JS strings
-                    { loader: 'style-loader' },
+
+                    { loader: MiniCssExtractPlugin.loader },
+
                     // Translates CSS into CommonJS
                     { loader: 'css-loader' },
+
                     // Compiles Sass to CSS
                     {loader: 'sass-loader' },
                 ],
@@ -49,6 +64,21 @@ module.exports = {
         ]
     },
     plugins: [
-        new ProgressPlugin(handler)
-    ]
+        new ProgressPlugin(handler),
+        new CleanWebpackPlugin(),
+        new MiniCssExtractPlugin({
+            filename: dev ? '[name].css' : '[name].[contenthash].css',
+        })
+    ],
+    optimization: {
+        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})]
+    }
 };
+
+if (!dev) {
+    config.mode = 'production';
+    config.devtool = '(none)';
+    config.plugins.push(new ManifestPlugin());
+}
+
+module.exports = config;

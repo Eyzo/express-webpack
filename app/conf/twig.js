@@ -1,13 +1,27 @@
+const conf = require('./conf');
 const Twig = require('twig');
 const fs = require('fs');
 const moment = require('moment');
 
 //Configuration de Twig
-Twig.extendFunction('last_bundle', function() {
-    var stats = fs.statSync('./public/dist/bundle.js');
-    var mtime = stats.mtime;
-    var date = Date.parse(mtime);
-    return date;
+Twig.extendFunction('get_js_bundle', function() {
+    const key = 'main.js';
+    if (conf.ENV == 'dev') {
+        return key;
+    } else {
+        const manifest = require(conf.PATH_DIST + 'manifest.json');
+        return manifest[key];
+    }
+});
+
+Twig.extendFunction('get_css_bundle', function() {
+    const key = 'main.css';
+    if (conf.ENV == 'dev') {
+        return key;
+    } else {
+        const manifest = require(conf.PATH_DIST + 'manifest.json');
+        return manifest[key];
+    }
 });
 
 Twig.extendFilter('timestampToDate', function (value) {

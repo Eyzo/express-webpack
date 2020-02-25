@@ -9,6 +9,7 @@
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
     <title>Album example for Bootstrap</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/album/">
+    <link rel="stylesheet" href="/dist/{{ get_css_bundle() }}">
 </head>
 
 <body>
@@ -40,6 +41,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.6/holder.min.js" integrity="sha256-yF/YjmNnXHBdym5nuQyBNU62sCUN9Hx5awMkApzhZR0=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
-<script src="/dist/bundle.js?date={{ last_bundle() }}"></script>
+<script src="/dist/{{ get_js_bundle() }}"></script>
 </body>
 </html>
